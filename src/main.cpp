@@ -30,6 +30,7 @@
 #include "serial/serialcommands.h"
 #include "batterymonitor.h"
 #include "logging/Logger.h"
+#include "PowerManager.h"
 
 Timer<> globalTimer;
 SlimeVR::Logging::Logger logger("SlimeVR");
@@ -39,6 +40,7 @@ SlimeVR::Status::StatusManager statusManager;
 SlimeVR::Configuration::Configuration configuration;
 SlimeVR::Network::Manager networkManager;
 SlimeVR::Network::Connection networkConnection;
+SlimeVR::PowerManager powerManager;
 
 int sensorToCalibrate = -1;
 bool blinking = false;
@@ -67,6 +69,9 @@ void setup()
     statusManager.setStatus(SlimeVR::Status::LOADING, true);
 
     ledManager.setup();
+#ifdef VKEY_PIN
+    powerManager.setup();
+#endif
     configuration.setup();
 
     SerialCommands::setUp();
@@ -118,6 +123,9 @@ void loop()
     sensorManager.update();
     battery.Loop();
     ledManager.update();
+#ifdef VKEY_PIN
+    powerManager.update();
+#endif
 #ifdef TARGET_LOOPTIME_MICROS
     long elapsed = (micros() - loopTime);
     if (elapsed < TARGET_LOOPTIME_MICROS)

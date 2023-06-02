@@ -27,10 +27,10 @@
 
 // Set parameters of IMU and board used
 #define IMU IMU_BNO085
-#define SECOND_IMU IMU
-#define BOARD BOARD_SLIMEVR
+//#define SECOND_IMU IMU
+#define BOARD BOARD_CUSTOM
 #define IMU_ROTATION DEG_270
-#define SECOND_IMU_ROTATION DEG_270
+//#define SECOND_IMU_ROTATION DEG_270
 
 #define PRIMARY_IMU_OPTIONAL false
 #define SECONDARY_IMU_OPTIONAL true
@@ -63,7 +63,7 @@ IMU_DESC_ENTRY(IMU_BMP160, PRIMARY_IMU_ADDRESS_ONE, IMU_ROTATION, PIN_IMU_SCL, P
 // For other boards you can now adjust the other resistor values.
 // The diagram looks like this:
 //   (Battery)--- [BATTERY_SHIELD_RESISTANCE] ---(INPUT_BOARD)---  [BATTERY_SHIELD_R2] ---(ESP32_INPUT)--- [BATTERY_SHIELD_R1] --- (GND)
-// #define BATTERY_SHIELD_RESISTANCE 180 //130k BatteryShield, 180k SlimeVR or fill in external resistor value in kOhm
+#define BATTERY_SHIELD_RESISTANCE 170 //130k BatteryShield, 180k SlimeVR or fill in external resistor value in kOhm
 // #define BATTERY_SHIELD_R1 100 // Board voltage divider resistor Ain to GND in kOhm
 // #define BATTERY_SHIELD_R2 220 // Board voltage divider resistor Ain to INPUT_BOARD in kOhm
 
@@ -149,6 +149,14 @@ IMU_DESC_ENTRY(IMU_BMP160, PRIMARY_IMU_ADDRESS_ONE, IMU_ROTATION, PIN_IMU_SCL, P
 //  #define LED_INVERTED false
 #elif BOARD == BOARD_CUSTOM
   // Define pins by the examples above
+  #define PIN_IMU_SDA 2
+  #define PIN_IMU_SCL 14
+  #define PIN_IMU_INT 5
+  #define PIN_IMU_INT_2 D6
+  #define PIN_BATTERY_LEVEL A0
+  #define LED_PIN 16
+//  #define LED_INVERTED true
+  #define VKEY_PIN 4 
 #elif BOARD == BOARD_WROOM32
   #define PIN_IMU_SDA 21
   #define PIN_IMU_SCL 22
