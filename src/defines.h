@@ -24,6 +24,32 @@
 // See docs for configuration options and examples:
 // https://docs.slimevr.dev/firmware/configuring-project.html#2-configuring-definesh
 // ================================================
+// CUSTOM define
+#define VENDOR_NAME "VR Lab"
+#define IMU IMU_BNO085
+#define SECOND_IMU IMU
+#define BOARD BOARD_CUSTOM
+#define IMU_ROTATION DEG_270
+#define BATTERY_SHIELD_RESISTANCE 170
+#define PIN_IMU_SDA 2
+#define PIN_IMU_SCL 14
+#define PIN_IMU_INT 5
+#define PIN_IMU_INT_2 D6
+#define PIN_BATTERY_LEVEL A0
+#define LED_PIN 16
+#define VKEY_PIN 4 
+#define MAX_SENSORS_COUNT 1
+#define PRIMARY_IMU_ADDRESS_ONE 0x4b
+#define SENSOR_DESC_LIST                       \
+	SENSOR_DESC_ENTRY(                         \
+		IMU,                                   \
+		PRIMARY_IMU_ADDRESS_ONE,               \
+		IMU_ROTATION,                          \
+		DIRECT_WIRE(PIN_IMU_SCL, PIN_IMU_SDA), \
+		PRIMARY_IMU_OPTIONAL,                  \
+		DIRECT_PIN(PIN_IMU_INT),               \
+		0                                      \
+	)                                          
 
 // Set parameters of IMU and board used
 #ifndef IMU

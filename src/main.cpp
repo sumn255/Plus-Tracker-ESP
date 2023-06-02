@@ -33,6 +33,7 @@
 #include "ota.h"
 #include "serial/serialcommands.h"
 #include "status/TPSCounter.h"
+#include "PowerManager.h"
 
 Timer<> globalTimer;
 SlimeVR::Logging::Logger logger("SlimeVR");
@@ -44,6 +45,7 @@ SlimeVR::Network::Manager networkManager;
 SlimeVR::Network::Connection networkConnection;
 SlimeVR::WiFiNetwork wifiNetwork;
 SlimeVR::WifiProvisioning wifiProvisioning;
+SlimeVR::PowerManager powerManager;
 
 #if DEBUG_MEASURE_SENSOR_TIME_TAKEN
 SlimeVR::Debugging::TimeTakenMeasurer sensorMeasurer{"Sensors"};
@@ -103,6 +105,9 @@ void setup() {
 	statusManager.setStatus(SlimeVR::Status::LOADING, true);
 
 	ledManager.setup();
+#ifdef VKEY_PIN
+    powerManager.setup();
+#endif
 	configuration.setup();
 
 	SerialCommands::setUp();
@@ -170,6 +175,9 @@ void loop() {
 	battery.Loop();
 	ledManager.update();
 	I2CSCAN::update();
+#ifdef VKEY_PIN
+    powerManager.update();
+#endif
 #ifdef TARGET_LOOPTIME_MICROS
 	long elapsed = (micros() - loopTime);
 	if (elapsed < TARGET_LOOPTIME_MICROS) {
