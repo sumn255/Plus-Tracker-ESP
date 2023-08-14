@@ -80,6 +80,6 @@
 #define ENABLE_INSPECTION false
 
 #define FIRMWARE_BUILD_NUMBER 16
-#define FIRMWARE_VERSION "0.3.3_mag"
+#define FIRMWARE_VERSION "0.3.3_mag_bno_fix"
 
 #endif // SLIMEVR_DEBUG_H_
