@@ -34,7 +34,10 @@
 #include "status/StatusManager.h"
 #include "batterymonitor.h"
 #include "logging/Logger.h"
-
+/*add code start by elecholic*/
+#include "RGBManager.h"
+SlimeVR::RGBManager rgbManager;
+/*add code end by elecholic*/
 SlimeVR::Logging::Logger logger("SlimeVR");
 SlimeVR::Sensors::SensorManager sensorManager;
 SlimeVR::LEDManager ledManager(LED_PIN);
@@ -51,6 +54,9 @@ BatteryMonitor battery;
 
 void setup()
 {
+    /*add code start by elecholic*/
+    rgbManager.setup();
+    /*add code end by elecholic*/
     Serial.begin(serialBaudRate);
 
 #ifdef ESP32C3 
@@ -66,7 +72,7 @@ void setup()
 
     statusManager.setStatus(SlimeVR::Status::LOADING, true);
 
-    ledManager.setup();
+    //ledManager.setup();
     configuration.setup();
 
     SerialCommands::setUp();
@@ -95,9 +101,9 @@ void setup()
 
     // Wait for IMU to boot
     delay(500);
-    
+
     sensorManager.setup();
-    
+
     Network::setUp();
     OTA::otaSetup(otaPassword);
     battery.Setup();
@@ -116,7 +122,7 @@ void loop()
     Network::update(sensorManager.getFirst(), sensorManager.getSecond());
     sensorManager.update();
     battery.Loop();
-    ledManager.update();
+    //ledManager.update();
 #ifdef TARGET_LOOPTIME_MICROS
     long elapsed = (micros() - loopTime);
     if (elapsed < TARGET_LOOPTIME_MICROS)

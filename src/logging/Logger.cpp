@@ -76,7 +76,7 @@ namespace SlimeVR
         strcat(buf, m_Tag);
       }
 
-      Serial.printf("[%-5s] [%s] %s\n", levelToString(level), buf, buffer);
+      Serial.printf("[%-5s] [%s] %s\r\n", levelToString(level), buf, buffer);
     }
   }
 }

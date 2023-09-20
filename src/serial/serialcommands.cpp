@@ -29,9 +29,15 @@
 #include "batterymonitor.h"
 #include "utils.h"
 
+/*add code start by elecholic*/
+#include "RGBManager.h"
+extern  SlimeVR::RGBManager rgbManager;
+/*add code end by elecholic*/
+
 #if ESP32
     #include "nvs_flash.h"
 #endif
+
 
 namespace SerialCommands {
     SlimeVR::Logging::Logger logger("SerialCommands");
@@ -39,6 +45,29 @@ namespace SerialCommands {
     CmdCallback<6> cmdCallbacks;
     CmdParser cmdParser;
     CmdBuffer<64> cmdBuffer;
+
+    /*add code start by elecholic*/
+    int16_t string2var(char *word)
+    {
+        uint8_t i = 0;
+        int16_t val = 0;
+        uint8_t neg_flag = 0;
+        if(*(word) == '-')
+        {
+            neg_flag = 1;
+            ++i;
+        }
+        while(*(word+i) >= '0' && *(word+i) <= '9')
+        {
+            val = val*10 + *(word+i) - '0';
+            ++i;
+        }
+        if(neg_flag == 1)
+            return -val;
+        else
+            return val;
+    }
+    /*add code end by elecholic*/
 
     void cmdSet(CmdParser * parser) {
         if(parser->getParamCount() != 1 && parser->equalCmdParam(1, "WIFI")  ) {
@@ -49,7 +78,43 @@ namespace SerialCommands {
                 WiFiNetwork::setWiFiCredentials(parser->getCmdParam(2), parser->getCmdParam(3));
                 logger.info("CMD SET WIFI OK: New wifi credentials set, reconnecting");
             }
-        } else {
+        } 
+        /*add code start by elecholic*/
+        else if(parser->getParamCount() != 1 && parser->equalCmdParam(1, "RGB")  ){
+            if(parser->getParamCount() < 4) {
+                logger.error("CMD SET RGB ERROR: Too few arguments");
+                logger.info("Syntax: SET RGB \"0-255\" \"0-255\" \"0-255\"");
+            } else {
+                rgbManager.ledr = string2var(parser->getCmdParam(2));
+                rgbManager.ledg = string2var(parser->getCmdParam(3));
+                rgbManager.ledb = string2var(parser->getCmdParam(4));
+
+                ledcWrite(LEDR_CH, 1023 - 4 * rgbManager.ledr);
+                ledcWrite(LEDG_CH, 1023 - 4 * rgbManager.ledg);
+                ledcWrite(LEDB_CH, 1023 - 4 * rgbManager.ledb);
+                logger.info("CMD SET RGB OK");
+            }
+        }
+        else if(parser->getParamCount() != 1 && parser->equalCmdParam(1, "SAVERGB")  ){
+            nvs_handle_t rgb_handle;
+            esp_err_t err;
+
+            err = nvs_open("storage", NVS_READWRITE, &rgb_handle);
+            if (err != ESP_OK) {
+                logger.info("Error (%s) opening NVS handle!", esp_err_to_name(err));
+            } else {
+                //logger.info("Done\n");
+            }
+            err = nvs_set_u8(rgb_handle, "ledr", rgbManager.ledr);
+            err = nvs_set_u8(rgb_handle, "ledg", rgbManager.ledg);
+            err = nvs_set_u8(rgb_handle, "ledb", rgbManager.ledb);
+            err = nvs_commit(rgb_handle);
+            nvs_close(rgb_handle);
+            logger.info("CMD SET SAVERGB OK");
+        }
+        
+        /*add code end by elecholic*/
+        else {
             logger.error("CMD SET ERROR: Unrecognized variable to set");
         }
     }

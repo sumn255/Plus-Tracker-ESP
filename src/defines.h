@@ -29,8 +29,8 @@
 #define IMU IMU_ICM20948
 #define SECOND_IMU IMU
 #define BOARD BOARD_LOLIN_C3_MINI
-#define IMU_ROTATION DEG_270
-//#define SECOND_IMU_ROTATION DEG_270
+#define IMU_ROTATION DEG_0
+#define SECOND_IMU_ROTATION DEG_0
 
 // Battery monitoring options (comment to disable):
 //   BAT_EXTERNAL for ADC pin, 
@@ -43,9 +43,9 @@
 // For other boards you can now adjust the other resistor values.
 // The diagram looks like this:
 //   (Battery)--- [BATTERY_SHIELD_RESISTANCE] ---(INPUT_BOARD)---  [BATTERY_SHIELD_R2] ---(ESP32_INPUT)--- [BATTERY_SHIELD_R1] --- (GND)
-// #define BATTERY_SHIELD_RESISTANCE 180 //130k BatteryShield, 180k SlimeVR or fill in external resistor value in kOhm
-// #define BATTERY_SHIELD_R1 100 // Board voltage divider resistor Ain to GND in kOhm
-// #define BATTERY_SHIELD_R2 220 // Board voltage divider resistor Ain to INPUT_BOARD in kOhm
+ #define BATTERY_SHIELD_RESISTANCE 0 //130k BatteryShield, 180k SlimeVR or fill in external resistor value in kOhm
+ #define BATTERY_SHIELD_R1 200 // Board voltage divider resistor Ain to GND in kOhm
+ #define BATTERY_SHIELD_R2 200 // Board voltage divider resistor Ain to INPUT_BOARD in kOhm
 
 // LED configuration:
 // Configuration Priority 1 = Highest:
@@ -141,9 +141,9 @@
   #define PIN_IMU_SDA 5
   #define PIN_IMU_SCL 4
   #define PIN_IMU_INT 6
-  #define PIN_IMU_INT_2 8
+  #define PIN_IMU_INT_2 10
   #define PIN_BATTERY_LEVEL 3
-  #define LED_PIN 7
+//  #define LED_PIN 7
 //  #define LED_INVERTED false
 #elif BOARD == BOARD_BEETLE32C3
   #define PIN_IMU_SDA 8

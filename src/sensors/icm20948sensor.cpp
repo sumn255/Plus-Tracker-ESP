@@ -75,7 +75,7 @@ void ICM20948Sensor::motionLoop()
 void ICM20948Sensor::readFIFOToEnd()
 {
     ICM_20948_Status_e readStatus = imu.readDMPdataFromFIFO(&dmpDataTemp);
-
+    
     #ifdef DEBUG_SENSOR
     {
         m_Logger.trace("e0x%02x", readStatus);
@@ -195,7 +195,7 @@ void ICM20948Sensor::startDMP()
     }
     #else
     {
-        if(imu.setDMPODRrate(DMP_ODR_Reg_Quat9, 0) == ICM_20948_Stat_Ok)
+        if(imu.setDMPODRrate(DMP_ODR_Reg_Quat9, 1) == ICM_20948_Stat_Ok)
         {
             m_Logger.debug("Set Quat9 to 100Hz frequency");
         }
@@ -208,7 +208,7 @@ void ICM20948Sensor::startDMP()
     #endif
 
     #if(SEND_ACCELERATION)
-    if (this->imu.setDMPODRrate(DMP_ODR_Reg_Accel, 0) == ICM_20948_Stat_Ok)
+    if (this->imu.setDMPODRrate(DMP_ODR_Reg_Accel, 1) == ICM_20948_Stat_Ok)
     {
         this->m_Logger.debug("Set Accel to 100Hz frequency");
     }
@@ -440,6 +440,9 @@ void ICM20948Sensor::loadCalibration()
 
     SlimeVR::Configuration::CalibrationConfig sensorCalibration = configuration.getCalibration(sensorId);
     // If no compatible calibration data is found, the calibration data will just be zero-ed out
+    /*add code start by elecholic*/
+    memset(&m_Calibration,0,sizeof(SlimeVR::Configuration::ICM20948CalibrationConfig));
+    /*add code end by elecholic*/
     switch (sensorCalibration.type) {
     case SlimeVR::Configuration::CalibrationConfigType::ICM20948:
         m_Calibration = sensorCalibration.data.icm20948;
