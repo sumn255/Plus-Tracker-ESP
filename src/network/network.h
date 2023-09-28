@@ -28,6 +28,7 @@
 #include "udpclient.h"
 #include "packets.h"
 #include "wifiprovisioning.h"
+#include "blehandler.h"
 
 namespace Network {
     void update(Sensor * const sensor, Sensor * const sensor2);

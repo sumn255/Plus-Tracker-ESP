@@ -30,7 +30,8 @@ uint8_t Sensor::getSensorState() {
 }
 
 void Sensor::sendData() {
-    if(newData) {
+    if(newData) 
+    {
         newData = false;
         Network::sendRotationData(&quaternion, DATA_TYPE_NORMAL, calibrationAccuracy, sensorId);
 

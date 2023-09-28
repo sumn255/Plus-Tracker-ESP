@@ -22,13 +22,29 @@
 */
 #include "network.h"
 
+bool lastBleConnected = false;
 bool lastWifiConnected = false;
 
 void Network::setUp() {
+#ifdef BLE_MODE
+    BLENetwork::setUp();
+#else
     WiFiNetwork::setUp();
+#endif
 }
 
 void Network::update(Sensor * const sensor, Sensor * const sensor2) {
+#ifdef BLE_MODE
+    //BLENetwork::upkeep();
+    if(BLENetwork::isConnected()) {
+        if(lastBleConnected == false) {
+            lastBleConnected = true;
+        }
+        ServerConnection::update(sensor, sensor2);
+    } else {
+        lastBleConnected = false;
+    }
+#else
     WiFiNetwork::upkeep();
     if(WiFiNetwork::isConnected()) {
         if(lastWifiConnected == false) {
@@ -39,4 +55,5 @@ void Network::update(Sensor * const sensor, Sensor * const sensor2) {
     } else {
         lastWifiConnected = false;
     }
+#endif
 }

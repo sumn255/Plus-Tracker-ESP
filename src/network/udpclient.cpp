@@ -25,6 +25,10 @@
 #include "packets.h"
 #include "logging/Logger.h"
 #include "GlobalVars.h"
+#include "blehandler.h"
+uint8_t ble_incomingPacket[128];
+int ble_len;
+bool is_ble_recv = false;
 
 #define TIMEOUT 3000UL
 
@@ -157,11 +161,18 @@ void Network::sendHeartbeat() {
         return;
     }
 
+#ifdef BLE_MODE
+        BLE_DataTransfer::cleanPacket();
+        BLE_DataTransfer::setPacketType(PACKET_HEARTBEAT);
+        BLE_DataTransfer::setPacketNumber();
+        BLE_DataTransfer::transferPacket();    
+#else
     if(DataTransfer::beginPacket()) {
         DataTransfer::sendPacketType(PACKET_HEARTBEAT);
         DataTransfer::sendPacketNumber();
         DataTransfer::endPacket();
     }
+#endif
 }
 
 // PACKET_ACCEL 4
@@ -171,6 +182,16 @@ void Network::sendAccel(float* vector, uint8_t sensorId) {
         return;
     }
 
+#ifdef BLE_MODE
+        BLE_DataTransfer::cleanPacket();
+        BLE_DataTransfer::setPacketType(PACKET_ACCEL);
+        BLE_DataTransfer::setPacketNumber();
+        BLE_DataTransfer::setFloat(vector[0]);
+        BLE_DataTransfer::setFloat(vector[1]);
+        BLE_DataTransfer::setFloat(vector[2]);
+        BLE_DataTransfer::setByte(sensorId);
+        BLE_DataTransfer::transferPacket();    
+#else
     if(DataTransfer::beginPacket()) {
         DataTransfer::sendPacketType(PACKET_ACCEL);
         DataTransfer::sendPacketNumber();
@@ -180,6 +201,7 @@ void Network::sendAccel(float* vector, uint8_t sensorId) {
         DataTransfer::sendByte(sensorId);
         DataTransfer::endPacket();
     }
+#endif
 }
 
 // PACKET_RAW_CALIBRATION_DATA 6
@@ -189,6 +211,17 @@ void Network::sendRawCalibrationData(float* vector, uint8_t calibrationType, uin
         return;
     }
 
+#ifdef BLE_MODE
+        BLE_DataTransfer::cleanPacket();
+        BLE_DataTransfer::setPacketType(PACKET_RAW_CALIBRATION_DATA);
+        BLE_DataTransfer::setPacketNumber();
+        BLE_DataTransfer::setByte(sensorId);
+        BLE_DataTransfer::setInt(calibrationType);
+        BLE_DataTransfer::setFloat(vector[0]);
+        BLE_DataTransfer::setFloat(vector[1]);
+        BLE_DataTransfer::setFloat(vector[2]);
+        BLE_DataTransfer::transferPacket();    
+#else
     if(DataTransfer::beginPacket()) {
         DataTransfer::sendPacketType(PACKET_RAW_CALIBRATION_DATA);
         DataTransfer::sendPacketNumber();
@@ -199,6 +232,7 @@ void Network::sendRawCalibrationData(float* vector, uint8_t calibrationType, uin
         DataTransfer::sendFloat(vector[2]);
         DataTransfer::endPacket();
     }
+#endif
 }
 
 void Network::sendRawCalibrationData(int* vector, uint8_t calibrationType, uint8_t sensorId) {
@@ -207,6 +241,17 @@ void Network::sendRawCalibrationData(int* vector, uint8_t calibrationType, uint8
         return;
     }
 
+#ifdef BLE_MODE
+        BLE_DataTransfer::cleanPacket();
+        BLE_DataTransfer::setPacketType(PACKET_RAW_CALIBRATION_DATA);
+        BLE_DataTransfer::setPacketNumber();
+        BLE_DataTransfer::setByte(sensorId);
+        BLE_DataTransfer::setInt(calibrationType);
+        BLE_DataTransfer::setInt(vector[0]);
+        BLE_DataTransfer::setInt(vector[1]);
+        BLE_DataTransfer::setInt(vector[2]);
+        BLE_DataTransfer::transferPacket();    
+#else
     if(DataTransfer::beginPacket()) {
         DataTransfer::sendPacketType(PACKET_RAW_CALIBRATION_DATA);
         DataTransfer::sendPacketNumber();
@@ -217,6 +262,7 @@ void Network::sendRawCalibrationData(int* vector, uint8_t calibrationType, uint8
         DataTransfer::sendInt(vector[2]);
         DataTransfer::endPacket();
     }
+#endif
 }
 
 // PACKET_CALIBRATION_FINISHED 7
@@ -226,6 +272,14 @@ void Network::sendCalibrationFinished(uint8_t calibrationType, uint8_t sensorId)
         return;
     }
 
+#ifdef BLE_MODE
+        BLE_DataTransfer::cleanPacket();
+        BLE_DataTransfer::setPacketType(PACKET_CALIBRATION_FINISHED);
+        BLE_DataTransfer::setPacketNumber();
+        BLE_DataTransfer::setByte(sensorId);
+        BLE_DataTransfer::setInt(calibrationType);
+        BLE_DataTransfer::transferPacket();    
+#else
     if(DataTransfer::beginPacket()) {
         DataTransfer::sendPacketType(PACKET_CALIBRATION_FINISHED);
         DataTransfer::sendPacketNumber();
@@ -233,6 +287,7 @@ void Network::sendCalibrationFinished(uint8_t calibrationType, uint8_t sensorId)
         DataTransfer::sendInt(calibrationType);
         DataTransfer::endPacket();
     }
+#endif
 }
 
 // PACKET_BATTERY_LEVEL 12
@@ -242,6 +297,14 @@ void Network::sendBatteryLevel(float batteryVoltage, float batteryPercentage) {
         return;
     }
 
+#ifdef BLE_MODE
+        BLE_DataTransfer::cleanPacket();
+        BLE_DataTransfer::setPacketType(PACKET_BATTERY_LEVEL);
+        BLE_DataTransfer::setPacketNumber();
+        BLE_DataTransfer::setFloat(batteryVoltage);
+        BLE_DataTransfer::setFloat(batteryPercentage);
+        BLE_DataTransfer::transferPacket();    
+#else
     if(DataTransfer::beginPacket()) {
         DataTransfer::sendPacketType(PACKET_BATTERY_LEVEL);
         DataTransfer::sendPacketNumber();
@@ -249,6 +312,7 @@ void Network::sendBatteryLevel(float batteryVoltage, float batteryPercentage) {
         DataTransfer::sendFloat(batteryPercentage);
         DataTransfer::endPacket();
     }
+#endif
 }
 
 // PACKET_TAP 13
@@ -258,6 +322,14 @@ void Network::sendTap(uint8_t value, uint8_t sensorId) {
         return;
     }
 
+#ifdef BLE_MODE
+        BLE_DataTransfer::cleanPacket();
+        BLE_DataTransfer::setPacketType(PACKET_TAP);
+        BLE_DataTransfer::setPacketNumber();
+        BLE_DataTransfer::setByte(sensorId);
+        BLE_DataTransfer::setByte(value);
+        BLE_DataTransfer::transferPacket();    
+#else
     if(DataTransfer::beginPacket()) {
         DataTransfer::sendPacketType(PACKET_TAP);
         DataTransfer::sendPacketNumber();
@@ -265,6 +337,7 @@ void Network::sendTap(uint8_t value, uint8_t sensorId) {
         DataTransfer::sendByte(value);
         DataTransfer::endPacket();
     }
+#endif
 }
 
 // PACKET_ERROR 14
@@ -274,6 +347,14 @@ void Network::sendError(uint8_t reason, uint8_t sensorId) {
         return;
     }
 
+#ifdef BLE_MODE
+        BLE_DataTransfer::cleanPacket();
+        BLE_DataTransfer::setPacketType(PACKET_ERROR);
+        BLE_DataTransfer::setPacketNumber();
+        BLE_DataTransfer::setByte(sensorId);
+        BLE_DataTransfer::setByte(reason);
+        BLE_DataTransfer::transferPacket();   
+#else
     if(DataTransfer::beginPacket()) {
         DataTransfer::sendPacketType(PACKET_ERROR);
         DataTransfer::sendPacketNumber();
@@ -281,6 +362,7 @@ void Network::sendError(uint8_t reason, uint8_t sensorId) {
         DataTransfer::sendByte(reason);
         DataTransfer::endPacket();
     }
+#endif
 }
 
 // PACKET_SENSOR_INFO 15
@@ -290,6 +372,15 @@ void Network::sendSensorInfo(Sensor * sensor) {
         return;
     }
 
+#ifdef BLE_MODE
+        BLE_DataTransfer::cleanPacket();
+        BLE_DataTransfer::setPacketType(PACKET_SENSOR_INFO);
+        BLE_DataTransfer::setPacketNumber();
+        BLE_DataTransfer::setByte(sensor->getSensorId());
+        BLE_DataTransfer::setByte(sensor->getSensorState());
+        BLE_DataTransfer::setByte(sensor->getSensorType());
+        BLE_DataTransfer::transferPacket();    
+#else
     if(DataTransfer::beginPacket()) {
         DataTransfer::sendPacketType(PACKET_SENSOR_INFO);
         DataTransfer::sendPacketNumber();
@@ -298,15 +389,29 @@ void Network::sendSensorInfo(Sensor * sensor) {
         DataTransfer::sendByte(sensor->getSensorType());
         DataTransfer::endPacket();
     }
+#endif
 }
 
 // PACKET_ROTATION_DATA 17
 void Network::sendRotationData(Quat * const quaternion, uint8_t dataType, uint8_t accuracyInfo, uint8_t sensorId) {
+    
     if(!connected)
     {
         return;
     }
-
+    
+#ifdef BLE_MODE
+        BLE_DataTransfer::cleanPacket();
+        BLE_DataTransfer::setPacketNumber();
+        BLE_DataTransfer::setByte(sensorId);
+        BLE_DataTransfer::setByte(dataType);
+        BLE_DataTransfer::setFloat(quaternion->x);
+        BLE_DataTransfer::setFloat(quaternion->y);
+        BLE_DataTransfer::setFloat(quaternion->z);
+        BLE_DataTransfer::setFloat(quaternion->w);
+        BLE_DataTransfer::setByte(accuracyInfo);
+        BLE_DataTransfer::transferPacket();    
+#else
     if(DataTransfer::beginPacket()) {
         DataTransfer::sendPacketType(PACKET_ROTATION_DATA);
         DataTransfer::sendPacketNumber();
@@ -319,6 +424,7 @@ void Network::sendRotationData(Quat * const quaternion, uint8_t dataType, uint8_
         DataTransfer::sendByte(accuracyInfo);
         DataTransfer::endPacket();
     }
+#endif
 }
 
 // PACKET_MAGNETOMETER_ACCURACY 18
@@ -328,6 +434,14 @@ void Network::sendMagnetometerAccuracy(float accuracyInfo, uint8_t sensorId) {
         return;
     }
 
+#ifdef BLE_MODE
+        BLE_DataTransfer::cleanPacket();
+        BLE_DataTransfer::setPacketType(PACKET_MAGNETOMETER_ACCURACY);
+        BLE_DataTransfer::setPacketNumber();
+        BLE_DataTransfer::setByte(sensorId);
+        BLE_DataTransfer::setFloat(accuracyInfo);
+        BLE_DataTransfer::transferPacket();    
+#else
     if(DataTransfer::beginPacket()) {
         DataTransfer::sendPacketType(PACKET_MAGNETOMETER_ACCURACY);
         DataTransfer::sendPacketNumber();
@@ -335,6 +449,7 @@ void Network::sendMagnetometerAccuracy(float accuracyInfo, uint8_t sensorId) {
         DataTransfer::sendFloat(accuracyInfo);
         DataTransfer::endPacket();
     }
+#endif
 }
 
 // PACKET_SIGNAL_STRENGTH 19
@@ -344,6 +459,14 @@ void Network::sendSignalStrength(uint8_t signalStrength) {
         return;
     }
 
+#ifdef BLE_MODE
+        BLE_DataTransfer::cleanPacket();
+        BLE_DataTransfer::setPacketType(PACKET_SIGNAL_STRENGTH);
+        BLE_DataTransfer::setPacketNumber();
+        BLE_DataTransfer::setByte(255);
+        BLE_DataTransfer::setByte(signalStrength);
+        BLE_DataTransfer::transferPacket();    
+#else
     if(DataTransfer::beginPacket()) {
         DataTransfer::sendPacketType(PACKET_SIGNAL_STRENGTH);
         DataTransfer::sendPacketNumber();
@@ -351,6 +474,7 @@ void Network::sendSignalStrength(uint8_t signalStrength) {
         DataTransfer::sendByte(signalStrength);
         DataTransfer::endPacket();
     }
+#endif
 }
 
 // PACKET_TEMPERATURE 20
@@ -360,6 +484,14 @@ void Network::sendTemperature(float temperature, uint8_t sensorId) {
         return;
     }
 
+#ifdef BLE_MODE
+        BLE_DataTransfer::cleanPacket();
+        BLE_DataTransfer::setPacketType(PACKET_TEMPERATURE);
+        BLE_DataTransfer::setPacketNumber();
+        BLE_DataTransfer::setByte(sensorId);
+        BLE_DataTransfer::setFloat(temperature);
+        BLE_DataTransfer::transferPacket();    
+#else
     if(DataTransfer::beginPacket()) {
         DataTransfer::sendPacketType(PACKET_TEMPERATURE);
         DataTransfer::sendPacketNumber();
@@ -367,9 +499,30 @@ void Network::sendTemperature(float temperature, uint8_t sensorId) {
         DataTransfer::sendFloat(temperature);
         DataTransfer::endPacket();
     }
+#endif
 }
 
 void Network::sendHandshake() {
+#ifdef BLE_MODE
+        BLE_DataTransfer::cleanPacket();
+        BLE_DataTransfer::setPacketType(PACKET_HANDSHAKE);
+        BLE_DataTransfer::setLong(0); // Packet number is always 0 for handshake
+        BLE_DataTransfer::setInt(BOARD);
+        // This is kept for backwards compatibility,
+        // but the latest SlimeVR server will not initialize trackers
+        // with firmware build > 8 until it recieves sensor info packet
+        BLE_DataTransfer::setInt(IMU);
+        BLE_DataTransfer::setInt(HARDWARE_MCU);
+        BLE_DataTransfer::setInt(0); 
+        BLE_DataTransfer::setInt(0);
+        BLE_DataTransfer::setInt(0);
+        BLE_DataTransfer::setInt(FIRMWARE_BUILD_NUMBER); // Firmware build number
+        BLE_DataTransfer::setShortString(FIRMWARE_VERSION);
+        uint8_t mac[6];
+        esp_base_mac_addr_get(mac);
+        BLE_DataTransfer::setBytes(mac, 6); // MAC address string
+        BLE_DataTransfer::transferPacket();    
+#else
     if(DataTransfer::beginPacket()) {
         DataTransfer::sendPacketType(PACKET_HANDSHAKE);
         DataTransfer::sendLong(0); // Packet number is always 0 for handshake
@@ -393,6 +546,7 @@ void Network::sendHandshake() {
     } else {
         udpClientLogger.error("Handshake write error: %d", Udp.getWriteError());
     }
+#endif
 }
 
 #if ENABLE_INSPECTION
@@ -546,10 +700,16 @@ void Network::sendInspectionCorrectionData(uint8_t sensorId, Quat quaternion)
 #endif
 
 void returnLastPacket(int len) {
+#ifdef BLE_MODE
+        BLE_DataTransfer::cleanPacket();
+        BLE_DataTransfer::setBytes(incomingPacket, len);
+        BLE_DataTransfer::transferPacket();    
+#else
     if(DataTransfer::beginPacket()) {
         DataTransfer::sendBytes(incomingPacket, len);
         DataTransfer::endPacket();
     }
+#endif
 }
 
 void updateSensorState(Sensor * const sensor, Sensor * const sensor2) {
@@ -568,6 +728,36 @@ bool ServerConnection::isConnected() {
 
 void ServerConnection::connect()
 {
+#ifdef BLE_MODE
+    unsigned long now = millis();
+    while(true) {
+        if(is_ble_recv)
+        {
+            is_ble_recv = false;
+            // Handshake is different, it has 3 in the first byte, not the 4th, and data starts right after
+            switch (ble_incomingPacket[0])
+            {
+            case PACKET_HANDSHAKE:
+                // Assume handshake successful, don't check it
+                // But proper handshake should contain "Hey OVR =D 5" ASCII string right after the packet number
+                // Starting on 14th byte (packet number, 12 bytes greetings, null-terminator) we can transfer SlimeVR handshake data
+                lastPacketMs = now;
+                connected = true;
+                statusManager.setStatus(SlimeVR::Status::SERVER_CONNECTING, false);
+                ledManager.off();
+                //udpClientLogger.debug("Handshake successful, server is %s:%d", Udp.remoteIP().toString().c_str(), + Udp.remotePort());
+                return;
+            default:
+            continue;
+            }
+        }
+        else
+        {
+            break;
+        }
+    }
+ 
+#else
     unsigned long now = millis();
     while(true) {
         int packetSize = Udp.parsePacket();
@@ -605,6 +795,8 @@ void ServerConnection::connect()
             break;
         }
     }
+#endif
+
     if(lastConnectionAttemptMs + 1000 < now)
     {
         lastConnectionAttemptMs = now;
@@ -626,6 +818,59 @@ void ServerConnection::resetConnection() {
 }
 
 void ServerConnection::update(Sensor * const sensor, Sensor * const sensor2) {
+
+#ifdef BLE_MODE
+    if(connected) {
+        if(is_ble_recv)
+        {
+            is_ble_recv = false;
+            lastPacketMs = millis();
+            switch (convert_chars<int>(ble_incomingPacket))
+            {
+            case PACKET_RECEIVE_HEARTBEAT:
+                Network::sendHeartbeat();
+                break;
+            case PACKET_RECEIVE_VIBRATE:
+                
+                break;
+            case PACKET_RECEIVE_HANDSHAKE:
+                // Assume handshake successful
+                udpClientLogger.warn("Handshake received again, ignoring");
+                break;
+            case PACKET_RECEIVE_COMMAND:
+                
+                break;
+            case PACKET_CONFIG:
+                
+                break;
+            case PACKET_PING_PONG:
+                returnLastPacket(ble_len);
+                break;
+            case PACKET_SENSOR_INFO:
+                if(ble_len < 6) {
+                    udpClientLogger.warn("Wrong sensor info packet");
+                    break;
+                }
+                if(incomingPacket[4] == sensor->getSensorId()) {
+                    sensorStateNotified1 = incomingPacket[5];
+                }
+                else if(incomingPacket[4] == sensor2->getSensorId()) {
+                    sensorStateNotified2 = incomingPacket[5];
+                }
+                break;
+            }
+        }
+        if(lastPacketMs + TIMEOUT < millis())
+        {
+            statusManager.setStatus(SlimeVR::Status::SERVER_CONNECTING, true);
+
+            connected = false;
+            sensorStateNotified1 = false;
+            sensorStateNotified2 = false;
+            udpClientLogger.warn("Connection to server timed out");
+        }
+    }  
+#else
     if(connected) {
         int packetSize = Udp.parsePacket();
         if (packetSize)
@@ -688,7 +933,8 @@ void ServerConnection::update(Sensor * const sensor, Sensor * const sensor2) {
             udpClientLogger.warn("Connection to server timed out");
         }
     }
-        
+#endif
+
     if(!connected) {
         connect();
     } else if(sensorStateNotified1 != sensor->isWorking() || sensorStateNotified2 != sensor2->isWorking()) {
