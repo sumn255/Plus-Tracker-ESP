@@ -35,6 +35,11 @@
 #define ENABLE_TAP false // monitor accel for (triple) tap events and send them. Uses more cpu, disable if problems. Server does nothing with value so disabled atm
 #define SEND_ACCELERATION true // send linear acceleration to the server
 
+#if ESP32
+//setup for BLE only for esp32/esp32c3
+#define BLE_MODE true//Set to true to use bluetooth low energy 
+#endif
+
 //Debug information
 
 #define LOG_LEVEL LOG_LEVEL_DEBUG

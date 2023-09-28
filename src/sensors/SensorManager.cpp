@@ -123,7 +123,7 @@ namespace SlimeVR
         }
 
         void SensorManager::update()
-        {
+        {/*
             // Gather IMU data
             m_Sensor1->motionLoop();
             m_Sensor2->motionLoop();
@@ -136,6 +136,9 @@ namespace SlimeVR
             // Send updates
             m_Sensor1->sendData();
             m_Sensor2->sendData();
+            */
+           m_Sensor1->motionLoop();
+           m_Sensor1->sendData();
         }
     }
 }

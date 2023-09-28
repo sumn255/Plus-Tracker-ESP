@@ -129,4 +129,23 @@ namespace DataTransfer {
     int getWriteError();
 }
 
+namespace BLE_DataTransfer {
+    //bool beginPacket();
+    //bool endPacket();
+    void cleanPacket();
+    void transferPacket();
+    void setPacketType(uint8_t type);
+    void setPacketNumber();
+
+    void setFloat(float f);
+    void setByte(uint8_t c);
+    void setInt(int i);
+    void setLong(uint64_t l);
+    void setBytes(const uint8_t * c, size_t length);
+    void setShortString(const char * str);
+    void setLongString(const char * str);
+
+    //int getWriteError();
+}
+
 #endif // SLIMEVR_PACKETS_H_

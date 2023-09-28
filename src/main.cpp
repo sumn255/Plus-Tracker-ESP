@@ -36,6 +36,7 @@
 #include "logging/Logger.h"
 /*add code start by elecholic*/
 #include "RGBManager.h"
+//#include "network/blehandler.h"
 SlimeVR::RGBManager rgbManager;
 /*add code end by elecholic*/
 SlimeVR::Logging::Logger logger("SlimeVR");
@@ -105,7 +106,8 @@ void setup()
     sensorManager.setup();
 
     Network::setUp();
-    OTA::otaSetup(otaPassword);
+    //OTA::otaSetup(otaPassword);
+    
     battery.Setup();
 
     statusManager.setStatus(SlimeVR::Status::LOADING, false);
@@ -118,9 +120,12 @@ void setup()
 void loop()
 {
     SerialCommands::update();
-    OTA::otaUpdate();
+
+    //OTA::otaUpdate();
     Network::update(sensorManager.getFirst(), sensorManager.getSecond());
+
     sensorManager.update();
+    
     battery.Loop();
     //ledManager.update();
 #ifdef TARGET_LOOPTIME_MICROS
