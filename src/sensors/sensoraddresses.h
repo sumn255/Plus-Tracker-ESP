@@ -5,8 +5,8 @@
 #if DEFAULT_IMU_ADDRESS
 
     #if IMU == IMU_BNO080 || IMU == IMU_BNO085 || IMU == IMU_BNO086
-        #define PRIMARY_IMU_ADDRESS_ONE 0x4A
-        #define PRIMARY_IMU_ADDRESS_TWO 0x4B
+        #define PRIMARY_IMU_ADDRESS_ONE 0x4B
+        #define PRIMARY_IMU_ADDRESS_TWO 0x4A
     #elif IMU == IMU_BNO055
         #define PRIMARY_IMU_ADDRESS_ONE 0x29
         #define PRIMARY_IMU_ADDRESS_TWO 0x28
